@@ -1,4 +1,8 @@
 RailsMake24::Application.routes.draw do
+  root :to => 'games#home'
+
+  match '/play' => 'games#play'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
