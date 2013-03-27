@@ -12,8 +12,11 @@
 			<h1><a href="/">Make 24: The Game</a></h>
 		</hgroup>
 	</header>
-
 <%= yield %>
+<% flash.each do |key, value| %>
+    <div class="alert"><%= value %></div>
+<% end %>
+<%= debug(params) if Rails.env.development? %>
 
 </body>
 </html>

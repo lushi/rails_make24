@@ -5,3 +5,23 @@
 		</div>
 <% end %>
 </div>
+
+<div id="score">
+	<p>Score: <%= @score %><p>
+</div>
+
+<% if @solution %>
+	<div class="button">
+		<a href="/play">Continue</a>
+	</div>
+<% else %>
+	<form action="/evaluate" method="post">
+		<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+		<input type="text" name="player_answer" class="textarea" value="Enter your solution here. Ex: (1 + 2) * (3 + 4)." onfocus="if(this.value=='Enter your solution here. Ex: (1 + 2) * (3 + 4).') {this.value='', this.style.color='#000'};">
+		<input type="submit" class="sm_button" value="Submit">
+	</form>
+	<form action="/solution" method="post">
+		<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+		<input type="submit" class="sm_button" value="No solution?">
+	</form>
+<% end %>
