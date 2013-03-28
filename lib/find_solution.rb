@@ -1,7 +1,7 @@
 class FindSolution
 	attr_reader :numbers
-	def initialize(n1, n2, n3, n4)
-		@numbers = [n1.to_f, n2.to_f, n3.to_f,n4.to_f].sort.reverse
+	def initialize(num_array)
+		@numbers = num_array.map(&:to_f).sort.reverse
 	end
 
 	def operators
@@ -29,7 +29,7 @@ class FindSolution
 		numbers.permutation 4 do |nums|
 			operators.repeated_permutation 3 do |ops|
 				if good_permutation(nums, ops)
-					return [nums.map { |n| n.to_i }, ops, good_permutation(nums, ops)]
+					return [nums.map(&:to_i), ops, good_permutation(nums, ops)]
 				end
 			end
 		end

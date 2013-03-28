@@ -1,60 +1,60 @@
 class GamesController < ApplicationController
+	include GamesHelper
+
   def home
-  	Game.new(session[:session_id])
-  	puts "session: #{session}"
+  	new_game
   end
 
   def play
-  	puts "session: #{session}"
-		if $games_db[session[:session_id]].nil?
-			redirect_to '/home'
-		else
-			@score = $games_db[session[:session_id]].score[0]
-			unless $games_db[session[:session_id]].terminal?
-				@hand = $games_db[session[:session_id]].draw_hand
+  	game = Game.find_by_session_id(session[:session_id])
+		if game
+			@score = game.score
+			unless game.deck.blank?
+					game.draw_hand
+					@hand = game.hand.split(",")
 			else
-				$games_db.delete(session[:session_id])
+				game.destroy
 				render 'game_over'
 			end
+		else
+			redirect_to '/'
 		end
 	end
 
 	def evaluate
-		puts "session: #{session}"
-		@hand = $games_db[session[:session_id]].hand
-		$games_db[session[:session_id]].player_answer = params[:player_answer]
-		if $games_db[session[:session_id]].input_valid?
-			if $games_db[session[:session_id]].make24?
-				$games_db[session[:session_id]].score[0] += 1
-				@score = $games_db[session[:session_id]].score[0]
+		game = Game.find_by_session_id(session[:session_id])
+		player_answer = params[:player_answer]
+		@hand = game.hand.split(",")
+		if game.input_valid?(player_answer, @hand)
+			if game.make24?(player_answer)
+				@score = game.score += 1
 				@solution = 0
 				flash.now[:success] = "Great job! That definitely makes 24."
 			else
-				$games_db[session[:session_id]].score[0] -= 1
-				@score = $games_db[session[:session_id]].score[0]
-				@solution = $games_db[session[:session_id]].solution || 0
-				flash.now[:error] = @solution == 0 ? "No solution." : "That's not right. The correct solution is: #{@solution}."
+				@score = game.score -= 1
+				@solution = game.solution(@hand) || 0
+				flash.now[:error] = @solution == 0 ? "There's no solution." : "That's not right. The correct solution is: #{@solution}."
 			end
 		else
-			@score = $games_db[session[:session_id]].score[0]
+			@score = game.score
 			flash.now[:error] = "That's not a valid input. Try again."
 		end
+		game.save
 		render 'play'
 	end
 
 	def solution
-		puts "session: #{session}"
-		@hand = $games_db[session[:session_id]].hand
-		@solution = $games_db[session[:session_id]].solution || 0
+		game = Game.find_by_session_id(session[:session_id])
+		@hand = game.hand.split(",").map(&:to_i)
+		@solution = game.solution(@hand) || 0
 		if @solution == 0
-			$games_db[session[:session_id]].score[0] += 1
-			@score = $games_db[session[:session_id]].score[0]
+			@score = game.score += 1
 			flash.now[:success] = "Good job. There's no solution."
 		else
-			$games_db[session[:session_id]].score[0] -= 1
-			@score = $games_db[session[:session_id]].score[0]
+			@score = game.score -= 1
 			flash.now[:error] = "The solution is: #{@solution}."
 		end
+		game.save
 		render 'play'
 	end
 end
