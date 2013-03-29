@@ -2,7 +2,11 @@ class GamesController < ApplicationController
 	include GamesHelper
 
   def home
+  end
+
+  def create
   	new_game
+  	redirect_to '/play'
   end
 
   def play
@@ -13,7 +17,6 @@ class GamesController < ApplicationController
 					game.draw_hand
 					@hand = game.hand.split(",")
 			else
-				game.destroy
 				render 'game_over'
 			end
 		else
@@ -56,5 +59,10 @@ class GamesController < ApplicationController
 		end
 		game.save
 		render 'play'
+	end
+
+	def destroy
+		Game.find_by_session_id(session[:session_id]).destroy
+		redirect_to '/'
 	end
 end

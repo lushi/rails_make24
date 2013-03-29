@@ -1,10 +1,12 @@
 RailsMake24::Application.routes.draw do
-  # resources :games
+  resources :games
   root :to => 'games#home'
 
   match '/play' => 'games#play'
   match '/evaluate' => 'games#evaluate'
   match '/solution' => 'games#solution'
+  match '/create' => 'games#create'
+  match '/destroy' => 'games#destroy'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

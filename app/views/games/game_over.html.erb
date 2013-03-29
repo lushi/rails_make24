@@ -2,6 +2,7 @@
 	<p>Game over! You got <%= @score %> out of 13.</p>
 </div>
 
-<div class="button">
-	<a href="/">Play Again!</a>
-</div>
+<form action="/destroy" method="delete">
+	<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+	<input type="submit" class="button" value="Play Again!">
+</form>

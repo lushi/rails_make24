@@ -3,6 +3,7 @@
 </p>
 
 
-<div class="button">
-	<a href="/play">Let's Go!</a>
-</div>
+<form action="/create" method="post">
+	<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+	<input type="submit" class="button" value="Play!">
+</form>
