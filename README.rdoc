@@ -1,1 +1,3 @@
 Make 24 is an adaptation of the classic Chinese card game where players must use addition, subtraction, multiplication, and/or division to make 24 from the face value of 4 cards at a time. The game ends when all 52 cards in the deck have been used.
+
+Currently deployed at http://make24.herokuapp.com/.
